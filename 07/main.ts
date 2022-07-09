@@ -1,9 +1,26 @@
 const test: string = await Deno.readTextFile("./input.txt");
 const list: number[] = test.split(",").map(Number);
-function calculateFuel(list: number[], target: number): number {
+
+function calculateSummation(target: number): number {
+  if (target % 2 === 0) {
+    return (1 + target) * target / 2;
+  } else {
+    return ((1 + target) * Math.floor(target / 2)) + ((target + 1) / 2);
+  }
+}
+
+function calculateFuelSecond(list: number[], target: number): number {
   let res = 0;
   for (let i = 0; i < list.length; i++) {
-    res += Math.abs(list[i] - target) + i + 1;
+    res += calculateSummation(Math.abs(list[i]- target));
+  }
+  return res;
+}
+
+function calculateFuelFirst(list: number[], target: number): number {
+  let res = 0;
+  for (let i = 0; i < list.length; i++) {
+    res += Math.abs(list[i] - target);
   }
   return res;
 }
@@ -31,7 +48,7 @@ console.log(calculateFuel(list, meanList)); */
 
 var minSoFar = Infinity;
 for (let i = 0; i < 2000; ++i) {
-  const fuel = calculateFuel(list, i);
+  const fuel = calculateFuelSecond(list, i);
   if (fuel < minSoFar) {
     minSoFar = fuel;
   }
