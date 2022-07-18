@@ -72,7 +72,7 @@ function partOne(input: string[][]): number {
       if (line[i] === "|"){
         continue;
       }
-      const digit = isADigit(toRealSeg(createMap(solution), line[i]));
+      const digit = isADigit(toRealSeg(createMap(solution || []), line[i]));
       tmpRes *= 10;
       tmpRes += digit!;
     }
