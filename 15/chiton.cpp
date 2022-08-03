@@ -129,6 +129,60 @@ int minIndex(const std::set<int> &v, const std::vector<int> &dis)
     return ind;
 }
 
+class Pnode {
+    public:
+    int index; int priority;
+    Pnode() {}
+    Pnode(int _i, int _p) : index(_i), priority(_p) {}
+    bool operator< (const Pnode& p) const { return priority < p.priority; }
+    bool operator> (const Pnode& p) const { return ! (*this < p);}
+    bool operator== (const Pnode& p) const { return index == p.index; }
+};
+
+int shortestPathLenghtPriorityQueue(const matrix_t &graph, const std::vector<int> &vInput, int startingPoint)
+{
+    const int dim = vInput.size();
+    const int INF = std::numeric_limits<int>::max();
+    std::vector<int> distances(dim, INF);
+    distances[startingPoint] = 0;
+    std::vector<int> prev(dim, -1);
+    std::priority_queue<Pnode, std::vector<Pnode>, std::greater<Pnode>> queue;
+     std::vector<bool> inQueue(dim, true);
+    for (int i = 0; i < dim; ++i) {
+        if (i != startingPoint)
+        queue.push(Pnode(i, INF));
+    }
+    queue.push(Pnode(startingPoint, 0));
+    Pnode curr;
+
+    while (!queue.empty())
+    {
+        int qsize = queue.size();
+        cout << "PROGRESS " << (float) ((dim - qsize) * 100.0f) / dim << "% \r";
+        curr = queue.top();
+        queue.pop();
+        int cnode = curr.index;
+        inQueue[cnode] = false;
+        assert(distances[cnode] != INF);
+        for (int iad = 0; iad < graph[cnode].size(); iad++)
+        {
+            int dest = graph[cnode][iad];
+            if (inQueue[dest])
+            {
+                int alt = distances[cnode] + vInput[dest];
+                if (alt < distances[dest] && distances[cnode] != INF)
+                {
+                    distances[dest] = alt;
+                    prev[dest] = cnode;                  
+                    queue.push(Pnode(dest, alt));
+                }
+            }
+        }
+    }
+    cout << "\n";
+    return distances[dim - 1];
+}
+
 int shortestPathLenght(const matrix_t &graph, const std::vector<int> &vInput, int startingPoint)
 {
     const int dim = vInput.size();
@@ -161,7 +215,7 @@ int shortestPathLenght(const matrix_t &graph, const std::vector<int> &vInput, in
             }
         }
     }
-    cout << "\n\n";
+    cout << "\n";
     return distances[dim - 1];
 }
 
@@ -231,7 +285,7 @@ int main(int argc, char *argv[])
     matrix_t graph(vInput.size());
     initGraph(graph, mInput, vInput);
     // part One
-    cout << shortestPathLenght(graph, vInput, 0) << "\n";
+    cout << shortestPathLenghtPriorityQueue(graph, vInput, 0) << "\n";
 
 #define SCALE_RATIO 5
     matrix_t bigmInput(mInput.size() * SCALE_RATIO, std::vector<int>(mInput.size() * SCALE_RATIO));
@@ -242,7 +296,7 @@ int main(int argc, char *argv[])
     initGraph(bigGraph, bigmInput, bigvInput);
 
     // generateGraphViz(bigGraph, bigvInput, bigmInput.size());
-    cout << shortestPathLenght(bigGraph, bigvInput, 0) << "\n";
+    cout << shortestPathLenghtPriorityQueue(bigGraph, bigvInput, 0) << "\n";
 
     return 0;
 }
