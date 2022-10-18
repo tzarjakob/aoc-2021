@@ -2,3 +2,6 @@
 *.hi
 *.out
 *.sh
+
+.elixir_ls/**
+*.beam
