@@ -1,5 +1,5 @@
 defmodule Packet do
-  defstruct ver: 0, val: 0, pl: 0, max: 0, min: 0
+  defstruct ver: 0, val: 0, pl: 0
 end
 
 defmodule Day16 do
@@ -22,8 +22,13 @@ defmodule Day16 do
     end
   end
 
+  def parse_subpackets_len(list, sub_len) when sub_len == 0 do
+    [] ++ [list]
+  end
+
   def parse_subpackets_len(list, sub_len) do
-    if Enum.all?(list, fn elem -> elem == "0" end) or sub_len == 0 do
+    if Enum.all?(list, fn elem -> elem == "0" end) or sub_len <= 7 do
+      raise("not a proper termination")
       [] ++ [list]
     else
       IO.puts("sublen = #{sub_len}")
