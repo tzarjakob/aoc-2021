@@ -1,5 +1,5 @@
 defmodule Packet do
-  defstruct ver: 0, val: 0, pl: 0
+  defstruct ver: 0, val: 0, pl: 0, max: 0, min: 0
 end
 
 defmodule Day16 do
@@ -27,7 +27,8 @@ defmodule Day16 do
       [] ++ [list]
     else
       IO.puts("sublen = #{sub_len}")
-      {packet, r_list} = parse_packet(list) # |> IO.inspect()
+      # |> IO.inspect()
+      {packet, r_list} = parse_packet(list)
       IO.puts("sublen = #{sub_len} | #{sub_len - packet.pl}")
       [packet] ++ parse_subpackets_len(r_list, sub_len - packet.pl)
     end
@@ -79,7 +80,14 @@ defmodule Day16 do
       true ->
         IO.puts("version = #{version}, type_id = #{type_id}, len = 6")
         {r_list, subpacks, used_bits} = parse_subpackets(list, :tumare)
-        res = eval_packets([%Packet{ver: version, val: :tumare, pl: 6}] ++ subpacks, :tumare, used_bits)
+
+        res =
+          eval_packets(
+            [%Packet{ver: version, val: :tumare, pl: 6}] ++ subpacks,
+            :tumare,
+            used_bits
+          )
+
         {res, r_list}
     end
   end
