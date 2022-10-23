@@ -1,5 +1,6 @@
 defmodule SecondPart do
   import Packet
+  use Application
 
   def eval(list, num) do
     if Enum.count(list) < num do
@@ -75,13 +76,67 @@ defmodule SecondPart do
 
   def apply_operator(packets, operator) do
     case operator do
-      :sum      -> Enum.map(packets, fn p -> p.val end) |> Enum.sum
-      :product  -> Enum.map(packets, fn p -> p.val end) |> Enum.product
-      :minimum  -> Enum.map(packets, fn p -> p.val end) |> Enum.min
-      :maximum  -> Enum.map(packets, fn p -> p.val end) |> Enum.max
-      :greater  -> if Enum.at(packets, 0).val >  Enum.at(packets, 1).val do 1 else 0 end
-      :less     -> if Enum.at(packets, 0).val <  Enum.at(packets, 1).val do 1 else 0 end
-      :equal_to -> if Enum.at(packets, 0).val == Enum.at(packets, 1).val do 1 else 0 end
+      :sum ->
+        IO.puts("SUM")
+
+        Enum.map(packets, fn p -> p.val end)
+        |> IO.inspect(limit: :infinity)
+        |> Enum.sum()
+        |> IO.inspect()
+
+      :product ->
+        IO.puts("PRODUCT")
+
+        Enum.map(packets, fn p -> p.val end)
+        |> IO.inspect(limit: :infinity)
+        |> Enum.product()
+        |> IO.inspect()
+
+      :minimum ->
+        IO.puts("MIN")
+
+        Enum.map(packets, fn p -> p.val end)
+        |> IO.inspect(limit: :infinity)
+        |> Enum.min()
+        |> IO.inspect()
+
+      :maximum ->
+        IO.puts("MAX")
+
+        Enum.map(packets, fn p -> p.val end)
+        |> IO.inspect(limit: :infinity)
+        |> Enum.max()
+        |> IO.inspect()
+
+      :greater ->
+        IO.puts("GREATER")
+        IO.inspect(packets, limit: :infinity)
+
+        if Enum.at(packets, 0).val > Enum.at(packets, 1).val do
+          1
+        else
+          0
+        end
+
+      :less ->
+        IO.puts("LESS")
+        IO.inspect(packets, limit: :infinity)
+
+        if Enum.at(packets, 0).val < Enum.at(packets, 1).val do
+          1
+        else
+          0
+        end
+
+      :equal_to ->
+        IO.puts("EQUAL")
+        IO.inspect(packets, limit: :infinity)
+
+        if Enum.at(packets, 0).val == Enum.at(packets, 1).val do
+          1
+        else
+          0
+        end
     end
   end
 
@@ -92,8 +147,6 @@ defmodule SecondPart do
     %Packet{ver: version_sum, val: res, pl: packet_len + used_bits}
   end
 
-
-
   def parse_packet(list) do
     {version, list} = eval(list, 3)
     {type_id, list} = eval(list, 3)
@@ -102,6 +155,7 @@ defmodule SecondPart do
       type_id == 4 ->
         {list, lit_value, times} = eval_lit_value(list, 0, 0)
         packet_len = 6 + times * 5
+        IO.puts("literal value = #{lit_value}")
         {%Packet{ver: version, val: lit_value, pl: packet_len}, list}
 
       true ->
@@ -114,6 +168,7 @@ defmodule SecondPart do
             operator_type(type_id),
             used_bits
           )
+
         {res, r_list}
     end
   end
@@ -126,5 +181,13 @@ defmodule SecondPart do
       |> String.graphemes()
 
     parse_packet(input_string) |> IO.inspect()
+  end
+
+  def start(_type, _args) do
+    data =
+      "805311100469800804A3E488ACC0B10055D8009548874F65665AD42F60073E7338E7E5C538D820114AEA1A19927797976F8F43CD7354D66747B3005B401397C6CBA2FCEEE7AACDECC017938B3F802E000854488F70FC401F8BD09E199005B3600BCBFEEE12FFBB84FC8466B515E92B79B1003C797AEBAF53917E99FF2E953D0D284359CA0CB80193D12B3005B4017968D77EB224B46BBF591E7BEBD2FA00100622B4ED64773D0CF7816600B68020000874718E715C0010D8AF1E61CC946FB99FC2C20098275EBC0109FA14CAEDC20EB8033389531AAB14C72162492DE33AE0118012C05EEB801C0054F880102007A01192C040E100ED20035DA8018402BE20099A0020CB801AE0049801E800DD10021E4002DC7D30046C0160004323E42C8EA200DC5A87D06250C50015097FB2CFC93A101006F532EB600849634912799EF7BF609270D0802B59876F004246941091A5040402C9BD4DF654967BFDE4A6432769CED4EC3C4F04C000A895B8E98013246A6016CB3CCC94C9144A03CFAB9002033E7B24A24016DD802933AFAE48EAA3335A632013BC401D8850863A8803D1C61447A00042E3647B83F313674009E6533E158C3351F94C9902803D35C869865D564690103004E74CB001F39BEFFAAD37DFF558C012D005A5A9E851D25F76DD88A5F4BC600ACB6E1322B004E5FE1F2FF0E3005EC017969EB7AE4D1A53D07B918C0B1802F088B2C810326215CCBB6BC140C0149EE87780233E0D298C33B008C52763C9C94BF8DC886504E1ECD4E75C7E4EA00284180371362C44320043E2EC258F24008747785D10C001039F80644F201217401500043A2244B8D200085C3F8690BA78F08018394079A7A996D200806647A49E249C675C0802609D66B004658BA7F1562500366279CCBEB2600ACCA6D802C00085C658BD1DC401A8EB136100"
+
+    SecondPart.main(data)
+    Task.start(fn -> nil end)
   end
 end

@@ -14,6 +14,7 @@ defmodule Day16.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
+      mod: {SecondPart, []},
       extra_applications: [:logger]
     ]
   end
